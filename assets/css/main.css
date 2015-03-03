@@ -1,0 +1,13 @@
+html,body{
+	font-family: "League Gothic", sans-serif;
+	font-size:18px;
+	color:#18AA00;
+	background-color: #80EA69;
+}
+
+h1{
+	letter-spacing: 0.75em;
+	text-align: center;
+	margin-top:15%;
+	word-break: break-all;
+}
