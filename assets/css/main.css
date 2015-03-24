@@ -1,13 +1,28 @@
 html,body{
 	font-family: "League Gothic", sans-serif;
-	font-size:18px;
+	font-size:24px;
 	color:#18AA00;
 	background-color: #80EA69;
 }
 
 h1{
-	letter-spacing: 0.75em;
+    font-size:12vw;
 	text-align: center;
 	margin-top:15%;
-	word-break: break-all;
+}
+
+ul{
+    text-align:center;
+    list-style: none;
+}
+
+li{
+    margin:0 0 0.5em;
+}
+
+a{
+    color:inherit;
+}
+a:hover{
+    color:#ddd6d6;
 }
