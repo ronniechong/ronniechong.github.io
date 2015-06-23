@@ -1,23 +1,44 @@
 html,body{
 	font-family: "League Gothic", sans-serif;
-	font-size:24px;
-	color:#18AA00;
-	background-color: #80EA69;
+	font-size:24pt;
+	color:darkgrey;
+	background-color: #fff;
+    height: 100%; 
+    margin: 0px; 
+    padding: 0px; 
+}
+body{
+    background:url('../img/overdrive.gif') bottom right no-repeat;
+    background-size:cover;
+}
+
+section{
+    height:100%;
+    padding:0 5%;
 }
 
 h1{
-    font-size:12vw;
-	text-align: center;
-	margin-top:15%;
+    font-size:10vw;
+    margin-bottom: 0.5em;
+    margin-top:0;
+    font-weight: 400;
+    color:#eee;
+    /*
+    background: -webkit-linear-gradient(#eee, #333);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;*/
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: #ddd6d6;
 }
 
 ul{
-    text-align:center;
     list-style: none;
+    padding:0;
 }
 
 li{
     margin:0 0 0.5em;
+    font-size:3vh;
 }
 
 a{
