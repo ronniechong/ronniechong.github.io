@@ -9,7 +9,7 @@ html,body{
 }
 body{
     background:url('../img/overdrive.gif') bottom right no-repeat;
-    background-size:cover;
+    background-size:100%;
 }
 
 section{
@@ -42,4 +42,10 @@ a{
 }
 a:hover{
     color:#ddd6d6;
+}
+
+@media screen(min-width: 768px){
+ body{
+    background-size:cover;
+ }   
 }
