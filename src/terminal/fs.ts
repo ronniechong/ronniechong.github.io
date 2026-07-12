@@ -52,5 +52,5 @@ export function getNode(path: string[]): FsNode | undefined {
 }
 
 export function formatPath(path: string[]): string {
-  return '/' + path.join('/');
+  return path.length === 0 ? '~' : `~/${path.join('/')}`;
 }
