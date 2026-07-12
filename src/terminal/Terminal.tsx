@@ -4,11 +4,15 @@ import { FitAddon } from '@xterm/addon-fit';
 import '@xterm/xterm/css/xterm.css';
 import { commands, type ShellState } from './commands';
 import { formatPath } from './fs';
+import { complete, replaceLastToken } from './complete';
 import { green, dimGray, cyan, red } from './colors';
 import styles from './Terminal.module.css';
 
 const BACKSPACE = '';
 const ENTER = '\r';
+const TAB = '\t';
+const ARROW_UP = '\x1b[A';
+const ARROW_DOWN = '\x1b[B';
 
 export function Terminal() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -44,6 +48,15 @@ export function Terminal() {
     let line = '';
     const writePrompt = () => term.write(`\r\n${prompt()}`);
 
+    const setLine = (newLine: string) => {
+      if (line.length > 0) term.write('\b \b'.repeat(line.length));
+      term.write(newLine);
+      line = newLine;
+    };
+
+    const history: string[] = [];
+    let historyIndex = 0;
+
     const runCommand = (input: string) => {
       const [name, ...args] = input.trim().split(/\s+/).filter(Boolean);
       if (!name) return;
@@ -68,6 +81,10 @@ export function Terminal() {
 
     const disposable = term.onData((data) => {
       if (data === ENTER) {
+        if (line.trim() && history[history.length - 1] !== line) {
+          history.push(line);
+        }
+        historyIndex = history.length;
         runCommand(line);
         line = '';
         writePrompt();
@@ -75,6 +92,28 @@ export function Terminal() {
         if (line.length > 0) {
           line = line.slice(0, -1);
           term.write('\b \b');
+        }
+      } else if (data === TAB) {
+        const candidates = complete(line, state);
+        if (candidates.length === 1) {
+          setLine(replaceLastToken(line, candidates[0]));
+        } else if (candidates.length > 1) {
+          term.write(`\r\n${candidates.join('  ')}`);
+          writePrompt();
+          term.write(line);
+        }
+      } else if (data === ARROW_UP) {
+        if (historyIndex > 0) {
+          historyIndex -= 1;
+          setLine(history[historyIndex]);
+        }
+      } else if (data === ARROW_DOWN) {
+        if (historyIndex < history.length - 1) {
+          historyIndex += 1;
+          setLine(history[historyIndex]);
+        } else if (historyIndex < history.length) {
+          historyIndex += 1;
+          setLine('');
         }
       } else if (data.charCodeAt(0) >= 32) {
         line += data;
