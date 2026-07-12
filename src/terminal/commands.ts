@@ -13,9 +13,7 @@ function ls(args: string[], state: ShellState): string {
   const node = getNode(target);
   if (!node) return `ls: no such file or directory: ${args[0] ?? formatPath(target)}`;
   if (node.type === 'file') return target[target.length - 1] ?? '';
-  const names = Object.entries(node.children)
-    .map(([name, child]) => (child.type === 'dir' ? `${name}/` : name))
-    .sort();
+  const names = Object.keys(node.children).sort();
   return names.length ? names.join('\n') : '(empty)';
 }
 
