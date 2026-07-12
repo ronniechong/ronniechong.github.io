@@ -4,6 +4,7 @@ import { FitAddon } from '@xterm/addon-fit';
 import '@xterm/xterm/css/xterm.css';
 import { commands, type ShellState } from './commands';
 import { formatPath } from './fs';
+import { green, dimGray, cyan, red } from './colors';
 import styles from './Terminal.module.css';
 
 const BACKSPACE = '';
@@ -22,6 +23,10 @@ export function Terminal() {
       theme: {
         background: '#0d0d0d',
         foreground: '#e0e0e0',
+        green: '#5fd75f',
+        cyan: '#56b6c2',
+        red: '#e06c75',
+        brightBlack: '#767676',
       },
     });
     const fitAddon = new FitAddon();
@@ -33,7 +38,8 @@ export function Terminal() {
     window.addEventListener('resize', handleResize);
 
     const state: ShellState = { cwd: [] };
-    const prompt = () => `guest@ronniechong:${formatPath(state.cwd)}$ `;
+    const prompt = () =>
+      `${green('guest')}${dimGray('@ronniechong')}:${cyan(formatPath(state.cwd))}$ `;
 
     let line = '';
     const writePrompt = () => term.write(`\r\n${prompt()}`);
@@ -45,8 +51,11 @@ export function Terminal() {
       const output = handler
         ? handler(args, state)
         : `command not found: ${name}. Type 'help' for a list of commands.`;
+      const isError = !handler || output.startsWith(`${name}: `);
       if (output) {
-        output.split('\n').forEach((outputLine) => term.write(`\r\n${outputLine}`));
+        output
+          .split('\n')
+          .forEach((outputLine) => term.write(`\r\n${isError ? red(outputLine) : outputLine}`));
       }
     };
 
