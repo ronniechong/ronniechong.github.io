@@ -1,0 +1,15 @@
+@import "open-props/style";
+@import "open-props/normalize";
+
+:root {
+  --terminal-bg: var(--gray-12);
+  --terminal-fg: var(--gray-2);
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  background: var(--terminal-bg);
+}
