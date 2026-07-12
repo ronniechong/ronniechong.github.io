@@ -51,6 +51,10 @@ export function Terminal() {
       const output = handler
         ? handler(args, state)
         : `command not found: ${name}. Type 'help' for a list of commands.`;
+      if (state.pendingLink) {
+        window.open(state.pendingLink, '_blank', 'noopener,noreferrer');
+        state.pendingLink = undefined;
+      }
       const isError = !handler || output.startsWith(`${name}: `);
       if (output) {
         output

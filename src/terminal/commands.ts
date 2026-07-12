@@ -1,7 +1,11 @@
 import { getNode, resolvePath, formatPath } from './fs';
+import { getProject } from './content';
 
 export interface ShellState {
   cwd: string[];
+  // Set by a handler (e.g. `open`) to request navigating to an external
+  // URL; Terminal.tsx opens it in a new tab after the command runs.
+  pendingLink?: string;
 }
 
 export type CommandHandler = (args: string[], state: ShellState) => string;
@@ -36,6 +40,20 @@ function cat(args: string[], state: ShellState): string {
   return node.entry.body;
 }
 
+function open(args: string[], state: ShellState): string {
+  const slug = args[0];
+  if (!slug) return "open: missing project name, e.g. 'open generative-art'";
+  const project = getProject(slug);
+  if (!project) return `open: no such project: ${slug}`;
+  const { title, link } = project.frontmatter;
+  const lines = [`# ${title ?? slug}`, '', project.body];
+  if (link) {
+    lines.push('', link);
+    state.pendingLink = link;
+  }
+  return lines.join('\n');
+}
+
 function whoami(): string {
   return "ronniechong — [TODO: one-line bio]. Type 'cat /pages/about.md' for more.";
 }
@@ -55,6 +73,7 @@ const descriptions: Record<string, string> = {
   ls: 'list current directory, or a given path',
   cd: "change directory, e.g. 'cd projects'",
   cat: "print a file, e.g. 'cat about.md'",
+  open: "open a project, e.g. 'open generative-art' (opens its link in a new tab)",
   clear: 'clear the screen',
   contact: 'how to reach me',
 };
@@ -71,6 +90,7 @@ export const commands: Record<string, CommandHandler> = {
   ls,
   cd,
   cat,
+  open,
   clear,
   contact,
 };
