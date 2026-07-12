@@ -1,30 +1,45 @@
-import { pages, projects, getPage } from './content';
+import { getNode, resolvePath, formatPath } from './fs';
 
-export type CommandHandler = (args: string[]) => string;
+export interface ShellState {
+  cwd: string[];
+}
+
+export type CommandHandler = (args: string[], state: ShellState) => string;
 
 const CONTACT_URL = 'https://github.com/ronniechong/ronniechong.github.io/issues/new';
 
-function ls(args: string[]): string {
-  const target = args[0]?.replace(/\/$/, '');
-  if (target === 'pages') {
-    return pages.length ? pages.map((p) => p.slug).join('\n') : '(no pages yet)';
-  }
-  if (target === 'projects') {
-    return projects.length ? projects.map((p) => p.slug).join('\n') : '(no projects yet)';
-  }
-  return `ls: unknown collection '${args[0] ?? ''}'. Try 'ls pages/' or 'ls projects/'.`;
+function ls(args: string[], state: ShellState): string {
+  const target = args[0] ? resolvePath(state.cwd, args[0]) : state.cwd;
+  const node = getNode(target);
+  if (!node) return `ls: no such file or directory: ${args[0] ?? formatPath(target)}`;
+  if (node.type === 'file') return target[target.length - 1] ?? '';
+  const names = Object.entries(node.children)
+    .map(([name, child]) => (child.type === 'dir' ? `${name}/` : name))
+    .sort();
+  return names.length ? names.join('\n') : '(empty)';
 }
 
-function cat(args: string[]): string {
-  const slug = args[0];
-  if (!slug) return "cat: missing page name. Try 'cat about'.";
-  const page = getPage(slug);
-  if (!page) return `cat: no such page '${slug}'. Try 'ls pages/' to see what's available.`;
-  return page.body;
+function cd(args: string[], state: ShellState): string {
+  const target = args[0] ? resolvePath(state.cwd, args[0]) : [];
+  const node = getNode(target);
+  if (!node) return `cd: no such directory: ${args[0]}`;
+  if (node.type !== 'dir') return `cd: not a directory: ${args[0]}`;
+  state.cwd = target;
+  return '';
+}
+
+function cat(args: string[], state: ShellState): string {
+  const name = args[0];
+  if (!name) return "cat: missing file name, e.g. 'cat about.md'";
+  const target = resolvePath(state.cwd, name);
+  const node = getNode(target);
+  if (!node) return `cat: no such file: ${name}`;
+  if (node.type !== 'file') return `cat: is a directory: ${name}`;
+  return node.entry.body;
 }
 
 function whoami(): string {
-  return "ronniechong — [TODO: one-line bio]. Type 'cat about' for more.";
+  return "ronniechong — [TODO: one-line bio]. Type 'cat /pages/about.md' for more.";
 }
 
 function contact(): string {
@@ -34,8 +49,9 @@ function contact(): string {
 const descriptions: Record<string, string> = {
   help: 'list available commands',
   whoami: 'short bio',
-  ls: "list a collection, e.g. 'ls pages/' or 'ls projects/'",
-  cat: "print a page, e.g. 'cat about'",
+  ls: 'list current directory, or a given path',
+  cd: "change directory, e.g. 'cd projects'",
+  cat: "print a file, e.g. 'cat about.md'",
   contact: 'how to reach me',
 };
 
@@ -49,6 +65,7 @@ export const commands: Record<string, CommandHandler> = {
   help,
   whoami,
   ls,
+  cd,
   cat,
   contact,
 };
