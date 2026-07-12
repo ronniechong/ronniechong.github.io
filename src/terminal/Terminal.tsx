@@ -37,6 +37,7 @@ export function Terminal() {
     term.loadAddon(fitAddon);
     term.open(containerRef.current);
     fitAddon.fit();
+    term.focus();
 
     const handleResize = () => fitAddon.fit();
     window.addEventListener('resize', handleResize);
