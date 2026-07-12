@@ -1,5 +1,6 @@
 import { getNode, resolvePath, formatPath } from './fs';
 import { getProject } from './content';
+import { renderMarkdown } from './markdown';
 
 export interface ShellState {
   cwd: string[];
@@ -37,7 +38,7 @@ function cat(args: string[], state: ShellState): string {
   const node = getNode(target);
   if (!node) return `cat: no such file: ${name}`;
   if (node.type !== 'file') return `cat: is a directory: ${name}`;
-  return node.entry.body;
+  return renderMarkdown(node.entry.body);
 }
 
 function open(args: string[], state: ShellState): string {
@@ -46,12 +47,12 @@ function open(args: string[], state: ShellState): string {
   const project = getProject(slug);
   if (!project) return `open: no such project: ${slug}`;
   const { title, link } = project.frontmatter;
-  const lines = [`# ${title ?? slug}`, '', project.body];
+  const parts = [`# ${title ?? slug}`, project.body];
   if (link) {
-    lines.push('', link);
+    parts.push(link);
     state.pendingLink = link;
   }
-  return lines.join('\n');
+  return renderMarkdown(parts.join('\n\n'));
 }
 
 function whoami(): string {
