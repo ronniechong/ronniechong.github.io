@@ -44,12 +44,18 @@ function contact(): string {
   return `Open an issue to get in touch: ${CONTACT_URL}`;
 }
 
+// Clears the visible screen and scrollback, then homes the cursor.
+function clear(): string {
+  return '\x1b[2J\x1b[3J\x1b[H';
+}
+
 const descriptions: Record<string, string> = {
   help: 'list available commands',
   whoami: 'short bio',
   ls: 'list current directory, or a given path',
   cd: "change directory, e.g. 'cd projects'",
   cat: "print a file, e.g. 'cat about.md'",
+  clear: 'clear the screen',
   contact: 'how to reach me',
 };
 
@@ -65,5 +71,6 @@ export const commands: Record<string, CommandHandler> = {
   ls,
   cd,
   cat,
+  clear,
   contact,
 };
