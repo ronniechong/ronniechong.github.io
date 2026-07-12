@@ -19,7 +19,7 @@ export function Terminal() {
     const term = new XTerm({
       cursorBlink: true,
       fontFamily: 'Menlo, Consolas, monospace',
-      fontSize: 14,
+      fontSize: 24,
       theme: {
         background: '#0d0d0d',
         foreground: '#e0e0e0',
