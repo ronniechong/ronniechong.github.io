@@ -46,8 +46,22 @@ const projectModules = import.meta.glob('/content/projects/*.md', {
   eager: true,
 }) as Record<string, string>;
 
+// Deliberately outside content/pages/ so it's never picked up by the
+// pages glob above — a 404 screen shouldn't be browsable via ls/cat.
+const notFoundModules = import.meta.glob('/content/404.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+
 export const pages: ContentEntry[] = loadCollection(pageModules);
 export const projects: ContentEntry[] = loadCollection(projectModules);
+
+export const notFound: ContentEntry = (() => {
+  const raw = Object.values(notFoundModules)[0] ?? '';
+  const { data, content } = parseFrontmatter(raw);
+  return { slug: '404', frontmatter: data, body: content.trim() };
+})();
 
 export function getPage(slug: string): ContentEntry | undefined {
   return pages.find((p) => p.slug === slug);

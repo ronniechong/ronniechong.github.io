@@ -13,3 +13,11 @@ body,
   height: 100%;
   background: var(--terminal-bg);
 }
+
+html,
+body {
+  /* xterm's fitAddon can render its canvas a few px wider than its fitted
+     container on narrow viewports; clip at the page level rather than
+     patching xterm's internal column math. */
+  overflow-x: hidden;
+}

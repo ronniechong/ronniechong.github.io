@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Terminal as XTerm } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
 import '@xterm/xterm/css/xterm.css';
@@ -14,8 +15,11 @@ const TAB = '\t';
 const ARROW_UP = '\x1b[A';
 const ARROW_DOWN = '\x1b[B';
 
-export function Terminal() {
+export function Terminal({ visible }: { visible: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const termRef = useRef<XTerm | null>(null);
+  const fitAddonRef = useRef<FitAddon | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -38,6 +42,8 @@ export function Terminal() {
     term.open(containerRef.current);
     fitAddon.fit();
     term.focus();
+    termRef.current = term;
+    fitAddonRef.current = fitAddon;
 
     const handleResize = () => fitAddon.fit();
     window.addEventListener('resize', handleResize);
@@ -69,6 +75,10 @@ export function Terminal() {
         window.open(state.pendingLink, '_blank', 'noopener,noreferrer');
         state.pendingLink = undefined;
       }
+      if (state.pendingNavigate) {
+        navigate(state.pendingNavigate);
+        state.pendingNavigate = undefined;
+      }
       const isError = !handler || output.startsWith(`${name}: `);
       if (output) {
         output
@@ -77,7 +87,7 @@ export function Terminal() {
       }
     };
 
-    term.writeln("Welcome. Type 'help' to get started.");
+    term.writeln("Oh hi, internet dweller. Type 'help' to get started. If you are commands phobia, just type 'gui' for an UI 😛");
     term.write(prompt());
 
     const disposable = term.onData((data) => {
@@ -128,6 +138,16 @@ export function Terminal() {
       term.dispose();
     };
   }, []);
+
+  // The terminal stays mounted (hidden via CSS) while the GUI routes are
+  // active, so its size goes stale and it loses focus. Re-fit and refocus
+  // whenever it becomes visible again instead of on every render.
+  useEffect(() => {
+    if (visible) {
+      fitAddonRef.current?.fit();
+      termRef.current?.focus();
+    }
+  }, [visible]);
 
   return <div ref={containerRef} className={styles.terminal} />;
 }

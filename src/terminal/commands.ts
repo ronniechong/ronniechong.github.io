@@ -7,6 +7,9 @@ export interface ShellState {
   // Set by a handler (e.g. `open`) to request navigating to an external
   // URL; Terminal.tsx opens it in a new tab after the command runs.
   pendingLink?: string;
+  // Set by a handler (e.g. `gui`) to request an in-app route change;
+  // Terminal.tsx calls react-router's navigate() after the command runs.
+  pendingNavigate?: string;
 }
 
 export type CommandHandler = (args: string[], state: ShellState) => string;
@@ -55,6 +58,11 @@ function open(args: string[], state: ShellState): string {
   return renderMarkdown(parts.join('\n\n'));
 }
 
+function gui(_args: string[], state: ShellState): string {
+  state.pendingNavigate = '/app';
+  return '';
+}
+
 function whoami(): string {
   return "ronniechong — [TODO: one-line bio]. Type 'cat /pages/about.md' for more.";
 }
@@ -77,6 +85,7 @@ const descriptions: Record<string, string> = {
   open: "open a project, e.g. 'open generative-art' (opens its link in a new tab)",
   clear: 'clear the screen',
   contact: 'how to reach me',
+  gui: "if you're commands-phobic, open the clickable version of this site",
 };
 
 function help(): string {
@@ -94,4 +103,5 @@ export const commands: Record<string, CommandHandler> = {
   open,
   clear,
   contact,
+  gui,
 };
