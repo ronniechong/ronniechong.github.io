@@ -89,7 +89,7 @@ export function Terminal({ visible }: { visible: boolean }) {
       }
     };
 
-    term.writeln("Oh hi, internet dweller. Type 'help' to get started. If you are commands phobia, just type 'gui' for an UI 😛");
+    term.writeln("Oh hi, internet dweller. Type 'help' to get started. If terminal commands give you hives, just type 'gui' for a UI 😛");
     term.write(prompt());
 
     const disposable = term.onData((data) => {
