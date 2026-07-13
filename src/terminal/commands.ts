@@ -110,7 +110,7 @@ async function stats(): Promise<string> {
 }
 
 function whoami(): string {
-  return "ronniechong — [TODO: one-line bio]. Type 'cat /pages/about.md' for more.";
+  return "I'm just another tech perp on the interweb who solves 90% of life's problems by turning it off and back on again. Type 'cat /pages/about.md' for more.";
 }
 
 function contact(): string {
