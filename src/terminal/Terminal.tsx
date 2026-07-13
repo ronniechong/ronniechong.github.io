@@ -64,12 +64,12 @@ export function Terminal({ visible }: { visible: boolean }) {
     const history: string[] = [];
     let historyIndex = 0;
 
-    const runCommand = (input: string) => {
+    const runCommand = async (input: string) => {
       const [name, ...args] = input.trim().split(/\s+/).filter(Boolean);
       if (!name) return;
       const handler = commands[name];
       const output = handler
-        ? handler(args, state)
+        ? await handler(args, state)
         : `command not found: ${name}. Type 'help' for a list of commands.`;
       if (state.pendingLink) {
         window.open(state.pendingLink, '_blank', 'noopener,noreferrer');
@@ -96,9 +96,11 @@ export function Terminal({ visible }: { visible: boolean }) {
           history.push(line);
         }
         historyIndex = history.length;
-        runCommand(line);
+        const toRun = line;
         line = '';
-        writePrompt();
+        // Async so `stats` can fetch before printing; the prompt only
+        // reappears once the command's output has been written.
+        void runCommand(toRun).then(writePrompt);
       } else if (data === BACKSPACE) {
         if (line.length > 0) {
           line = line.slice(0, -1);
