@@ -44,7 +44,7 @@ export function getNode(path: string[]): FsNode | undefined {
   let node: FsNode = root;
   for (const part of path) {
     if (node.type !== 'dir') return undefined;
-    const next = node.children[part];
+    const next: FsNode | undefined = node.children[part];
     if (!next) return undefined;
     node = next;
   }
