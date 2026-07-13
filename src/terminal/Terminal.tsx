@@ -7,6 +7,7 @@ import { commands, type ShellState } from './commands';
 import { formatPath } from './fs';
 import { complete, replaceLastToken } from './complete';
 import { green, dimGray, cyan, red } from './colors';
+import { trackEvent } from '../analytics';
 import styles from './Terminal.module.css';
 
 const BACKSPACE = '';
@@ -67,6 +68,7 @@ export function Terminal({ visible }: { visible: boolean }) {
     const runCommand = async (input: string) => {
       const [name, ...args] = input.trim().split(/\s+/).filter(Boolean);
       if (!name) return;
+      trackEvent(input.trim());
       const handler = commands[name];
       const output = handler
         ? await handler(args, state)

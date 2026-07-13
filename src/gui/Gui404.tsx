@@ -5,7 +5,7 @@ import styles from './Gui.module.css';
 
 export function Gui404() {
   return (
-    <GuiScreen>
+    <GuiScreen screenName="404">
       <div
         className={styles.content}
         dangerouslySetInnerHTML={{ __html: renderMarkdownHtml(notFound.body) }}

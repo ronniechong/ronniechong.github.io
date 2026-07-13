@@ -6,7 +6,7 @@ import styles from './Gui.module.css';
 export function GuiPage({ slug }: { slug: string }) {
   const page = getPage(slug);
   return (
-    <GuiScreen>
+    <GuiScreen screenName={slug}>
       <div
         className={styles.content}
         dangerouslySetInnerHTML={{

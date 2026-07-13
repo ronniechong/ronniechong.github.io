@@ -1,6 +1,7 @@
 import { projects } from '../terminal/content';
 import { renderMarkdownHtml } from './markdown';
 import { GuiScreen } from './GuiScreen';
+import { trackEvent } from '../analytics';
 import styles from './Gui.module.css';
 
 // Project bodies open with a `# Title` heading for the terminal's `cat`/
@@ -12,7 +13,7 @@ function stripLeadingHeading(body: string): string {
 
 export function GuiProjects() {
   return (
-    <GuiScreen>
+    <GuiScreen screenName="projects">
       <h1>Projects</h1>
       {projects.map((project) => {
         const { title, link } = project.frontmatter;
@@ -24,6 +25,7 @@ export function GuiProjects() {
                 href={link}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackEvent(`gui:project:${project.slug}`)}
               >
                 {title ?? project.slug}
               </a>
