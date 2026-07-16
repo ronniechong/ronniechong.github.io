@@ -96,6 +96,19 @@
   color: #0b5fff;
 }
 
+/* Open Props' normalize import (theme.css) styles inline <code> with
+   background: var(--surface-2) — a token that auto-switches with the OS's
+   prefers-color-scheme. This page is a deliberately fixed light theme (see
+   .page above), not dark-mode-aware, so under a dark-mode OS that token
+   flips to a dark background while the inherited text color stays this
+   page's fixed dark #1a1a1a — dark text on a dark chip. Override with
+   fixed, always-light-appropriate colors instead of the auto-switching
+   token. */
+.content :global(code) {
+  background: #f0f0f0;
+  color: #1a1a1a;
+}
+
 .projectCard {
   padding: 1.25rem 0;
   border-bottom: 1px solid #e5e5e5;
