@@ -2,6 +2,7 @@
 title: Agent Worker
 link: https://github.com/ronniechong/agent-worker
 repo: ronniechong/agent-worker
+added: 2026-07-13
 ---
 # Agent Worker
 

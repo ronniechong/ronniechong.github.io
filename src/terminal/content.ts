@@ -34,6 +34,17 @@ function loadCollection(rawModules: Record<string, string>): ContentEntry[] {
     .sort((a, b) => a.slug.localeCompare(b.slug));
 }
 
+// Projects show newest-first (an `added: YYYY-MM-DD` frontmatter field),
+// not alphabetically like pages — visitors browsing the list should see
+// the latest work on top. Missing/equal dates fall back to slug order so
+// this never throws on a project file someone forgets to date.
+function sortProjectsByAddedDesc(entries: ContentEntry[]): ContentEntry[] {
+  return [...entries].sort((a, b) => {
+    const dateDiff = (b.frontmatter.added ?? '').localeCompare(a.frontmatter.added ?? '');
+    return dateDiff !== 0 ? dateDiff : a.slug.localeCompare(b.slug);
+  });
+}
+
 const pageModules = import.meta.glob('/content/pages/*.md', {
   query: '?raw',
   import: 'default',
@@ -55,7 +66,7 @@ const notFoundModules = import.meta.glob('/content/404.md', {
 }) as Record<string, string>;
 
 export const pages: ContentEntry[] = loadCollection(pageModules);
-export const projects: ContentEntry[] = loadCollection(projectModules);
+export const projects: ContentEntry[] = sortProjectsByAddedDesc(loadCollection(projectModules));
 
 export const notFound: ContentEntry = (() => {
   const raw = Object.values(notFoundModules)[0] ?? '';

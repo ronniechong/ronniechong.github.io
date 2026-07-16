@@ -21,7 +21,10 @@ function ls(args: string[], state: ShellState): string {
   const node = getNode(target);
   if (!node) return `ls: no such file or directory: ${args[0] ?? formatPath(target)}`;
   if (node.type === 'file') return target[target.length - 1] ?? '';
-  const names = Object.keys(node.children).sort();
+  // Not alphabetized — DirNode.children already reflects the intended
+  // display order (pages alphabetical, projects newest-first; see
+  // content.ts), and toDir() builds children by insertion order to match.
+  const names = Object.keys(node.children);
   return names.length ? names.join('\n') : '(empty)';
 }
 

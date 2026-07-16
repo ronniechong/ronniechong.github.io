@@ -2,6 +2,7 @@
 title: Picture Haiku
 link: https://picture-haiku.vercel.app/
 repo: ronniechong/picture-haiku
+added: 2026-07-13
 ---
 # Picture Haiku
 

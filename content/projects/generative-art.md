@@ -2,6 +2,7 @@
 title: Generative Art
 link: https://generative-art-beige-one.vercel.app/
 repo: ronniechong/generative-art
+added: 2026-07-13
 ---
 # Generative Art
 
