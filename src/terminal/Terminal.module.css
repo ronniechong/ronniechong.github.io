@@ -1,7 +1,29 @@
 .terminal {
+  position: relative;
   width: 100vw;
   height: 100vh;
   box-sizing: border-box;
   padding: var(--size-3);
   background: var(--terminal-bg);
+}
+
+/* CRT scanline overlay */
+.terminal::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.15) 0px,
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  mix-blend-mode: multiply;
+}
+
+/* Phosphor glow on terminal text */
+.terminal :global(.xterm-rows) span {
+  text-shadow: 0 0 2px currentColor;
 }
