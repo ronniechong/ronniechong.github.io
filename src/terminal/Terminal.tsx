@@ -30,7 +30,7 @@ export function Terminal({ visible }: { visible: boolean }) {
       fontFamily: 'Menlo, Consolas, monospace',
       fontSize: 20,
       theme: {
-        background: '#0d0d0d',
+        background: '#030507',
         foreground: '#e0e0e0',
         green: '#5fd75f',
         cyan: '#56b6c2',
