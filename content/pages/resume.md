@@ -11,7 +11,7 @@ I spent 9+ years at OpenTable turning "email the restaurant and hope" into full-
 
 ## EXPERIENCE
 
-### Senior Engineering Manager
+### Software Engineering Manager / Principal Software Engineer
 OpenTable
 
 Spent 9+ years at OpenTable, starting as a pioneer engineer on Business Insights — building the interactive reporting dashboards and D3 data visualisations that helped restaurants make revenue and performance decisions.
